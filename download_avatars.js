@@ -8,6 +8,10 @@ console.log('Welcome to the GitHub Avatar Downloader!');
 
 
 function getRepoContributors(repoOwner, repoName, cb) {
+    if(process.argv[2] == undefined || process.argv[3] == undefined) {
+    console.log("Please enter two arguments");
+    return;
+  }
   var options = {
     url: "https://api.github.com/repos/" + repoOwner + "/" + repoName + "/contributors",
     headers: {
@@ -18,9 +22,9 @@ function getRepoContributors(repoOwner, repoName, cb) {
     }
   };
   request(options, function(err, res, body) {
-    var ar = JSON.parse(body);
+      var ar = JSON.parse(body);
     // console.log(JSON.parse(body);
-    ar.forEach((item) => {
+      ar.forEach((item) => {
       var url = item.avatar_url
       var filePath = './avatars/' + item.login + ".jpg";
       downloadImageByURL(url, filePath);
@@ -35,6 +39,7 @@ function downloadImageByURL(url, filePath) {
   request.get(url)               // Note 1
        .on('error', function (err) {                                   // Note 2
          throw err;
+
        })
        .on('response', function (response) {                           // Note 3
          console.log('Response Status Code: ', response.statusCode);
@@ -43,8 +48,14 @@ function downloadImageByURL(url, filePath) {
 }
 
 getRepoContributors(process.argv[2], process.argv[3], function(err, result) {
-  console.log("Errors:", err);
+  // if(process.argv[2] == undefined || process.argv[3] == undefined) {
+  //   console.log("Please enter two arguments");
+  //   return;
+  // }
+  console.log("Error:", err);
   console.log("Result:", result);
+
+
 });
 
 // getRepoContributors('jquery','jquery', console.log);
